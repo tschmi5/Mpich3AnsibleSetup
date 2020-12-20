@@ -47,11 +47,8 @@
       lineinfile:
         path: /home/pi/.profile
         line: PATH=$PATH:/home/rpimpi/mpi-install/bin
-
+        
     - name: Reboot
       reboot:
-
-    - name: Verify Setup
-      shell: mpiexec -n 1 hostname
 
 

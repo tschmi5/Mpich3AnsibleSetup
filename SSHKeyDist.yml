@@ -3,6 +3,7 @@
 # to allow passwordless SSH between them
 - hosts: all
   gather_facts: no
+  become: no
   tasks:
   - name: Generate SSH keys
     shell: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -N ''

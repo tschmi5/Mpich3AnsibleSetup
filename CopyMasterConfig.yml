@@ -1,6 +1,6 @@
 ---
 
-- name: Syncronize other hosts home directory
+- name: Syncronize workers to master home directory
   hosts: workers
   gather_facts: no
   become: yes

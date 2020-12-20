@@ -4,7 +4,7 @@
   hosts: all
   gather_facts: no
   vars:
-    packages_to_install: [gfortran, wget, python3, python3-dev, python3-pip, vim, python-dev]
+    packages_to_install: [cockpit, gfortran, wget, python3, python3-dev, python3-pip, vim, python-dev, python-setuptools]
     pip_packages: [mpi4py]
   become: yes
 
@@ -19,3 +19,16 @@
       pip:
         name: mpi4py
         executable: pip3
+
+    - name: Add folder for auto rsync of scripts to all hosts
+      file:
+        path: /home/pi/scripts
+        state: directory
+        mode: '0755'
+
+    - name: Enable Cockpit for cluster monitoring
+      systemd:
+        name: cockpit
+        state: started
+        enabled: yes
+   

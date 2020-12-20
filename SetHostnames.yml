@@ -4,6 +4,8 @@
   become: yes
   remote_user: pi
   tasks:
-    - name: Assign names to the Controllers
+    - name: Assign names to the Hosts
       hostname:
         name: "{{ hostvars[ansible_host].hostname }}"
+    - name: Add Hostname to /etc/hosts file
+      shell: echo $(hostname -I | cut -d\  -f1) $(hostname) | sudo tee -a /etc/hosts

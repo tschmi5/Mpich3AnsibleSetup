@@ -1,0 +1,36 @@
+---
+
+- name: Setup rsync of scripts from master to workers
+  hosts: master
+  become: no
+  gather_facts: no
+
+  tasks:
+    - name: Creat file for list of workers
+      file:
+        path: ~/.cluster_hosts
+        state: touch
+
+    - name: Copy in workers to hosts file
+      lineinfile:
+        path: ~/.cluster_hosts
+        line: "{{ item }}"
+      with_items:
+        - "{{ groups['workers'] }}"
+
+    - name: Add rsync script to master executed every 15 seconds
+      copy:
+        dest: "~/.rsync_workers.sh"
+        content: |
+          #!/bin/sh
+          for i in {1..4}; do
+            while read ip; do
+              rsync -e "ssh -o StrictHostKeyChecking=no" -ar /home/pi/scripts/ pi@"$ip":/home/pi/scripts/ --delete
+            done </home/pi/.cluster_hosts
+            sleep 15
+          done
+        mode: a+x
+    - name: Add rsync script to cron
+      cron:
+        name: "Rsync Hosts"
+        job: "bash /home/pi/.rsync_workers.sh &"
