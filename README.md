@@ -16,7 +16,7 @@ Prereqs:
   192.168.1.12 hostname=node2
   192.168.1.13 hostname=node3
   192.168.1.14 hostname=node4
-```
+  ```
 
 Use your fastest Machine as master. Building Mpich3 takes a while so it is only built on master and then copied to the workers
 
