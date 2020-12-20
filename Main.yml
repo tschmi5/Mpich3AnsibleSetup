@@ -1,0 +1,7 @@
+---
+  
+- import_playbook: SetHostnames.yml
+- import_playbook: SSHKeyDist.yml
+- import_playbook: MpichPrereqs.yml
+- import_playbook: MpichInstall.yml
+- import_playbook: CopyMasterConfig.yml

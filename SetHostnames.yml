@@ -1,0 +1,9 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+  remote_user: pi
+  tasks:
+    - name: Assign names to the Controllers
+      hostname:
+        name: "{{ hostvars[ansible_host].hostname }}"

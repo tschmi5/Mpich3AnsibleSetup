@@ -1,0 +1,57 @@
+---
+
+- name: Install and Configure Mpich3 on Master Node
+  hosts: master
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Make Mpich3 Directory
+      file:
+        path: /home/pi/mpich3
+        state: directory
+        mode: '0755'
+    - name: Make rpimpi Directory
+      file:
+        path: /home/rpimpi
+        state: directory
+        mode: '0755'
+    - name: Make rpimpi install Directory
+      file:
+        path: /home/rpimpi/mpi-install
+        state: directory
+        mode: '0755'
+    - name: Make build Directory
+      file:
+        path: /home/pi/mpi-build
+        state: directory
+        mode: '0755'
+    - name: Download Mpich
+      get_url:
+        url: http://www.mpich.org/static/downloads/3.3/mpich-3.3.tar.gz
+        dest: /home/pi/mpich3
+
+    - name: Extract Mpich3
+      unarchive:
+        src: /home/pi/mpich3/mpich-3.3.tar.gz
+        dest: /home/pi/mpich3/
+        remote_src: yes
+
+    - name: Configure Mpich3
+      shell: cd /home/pi/mpi-build && /home/pi/mpich3/mpich-3.3/configure -prefix=/home/rpimpi/mpi-install
+    
+    - name: Run Make
+      shell: cd /home/pi/mpi-build && make && make install
+
+    - name: Add path
+      lineinfile:
+        path: /home/pi/.profile
+        line: PATH=$PATH:/home/rpimpi/mpi-install/bin
+
+    - name: Reboot
+      reboot:
+
+    - name: Verify Setup
+      shell: mpiexec -n 1 hostname
+
+

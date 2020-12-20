@@ -1,0 +1,26 @@
+---
+# Gather the SSH of all hosts and add them to every host in the inventory
+# to allow passwordless SSH between them
+- hosts: all
+  gather_facts: no
+  tasks:
+  - name: Generate SSH keys
+    shell: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -N ''
+    args:
+      creates: ~/.ssh/id_rsa
+
+  - name: Allow passwordless SSH between all hosts
+    shell: /bin/cat ~/.ssh/id_rsa.pub
+    register: ssh_keys
+
+  - name: Create authorized_keys file
+    file:
+      path: ~/.ssh/authorized_keys
+      state: touch
+
+  - name: Allow passwordless SSH between all hosts
+    lineinfile:
+      dest: ~/.ssh/authorized_keys
+      state: present
+      line:  " {{ hostvars[item]['ssh_keys']['stdout'] }}"
+    with_items: "{{ groups['all']}}"

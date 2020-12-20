@@ -1,0 +1,13 @@
+---
+
+- name: Syncronize other hosts home directory
+  hosts: workers
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Synchronization using rsync protocol on delegate host (pull)
+      shell: 'rsync -e "ssh -o StrictHostKeyChecking=no" --links -ar root@{{ groups["master"][0] }}:/home/ /home/'
+
+    - name: Reboot
+      reboot:
